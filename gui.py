@@ -19,7 +19,7 @@ class SudokuUI(tk.Frame):
         self.row, self.col = -1, -1
         self.__draw_entries()
 
-
+    # ------------------------ UI setup start ------------------------
     def __setup_UI(self):
         self.master.title("Sudoku")
         
@@ -28,14 +28,15 @@ class SudokuUI(tk.Frame):
         
         self.canvas.bind("<Button-1>", self.__cell_clicked)
         self.canvas.bind("<Key>", self.__key_pressed)
+        self.canvas.bind("<BackSpace>", self.__delete_entry)
+
         self.__draw_grid()
 
         buttonFrame = tk.Frame(self)
         buttonFrame.pack(side="bottom", fill="x")
         tk.Button(buttonFrame, text="Solve", command=self.__solve).pack(side="left")
-        tk.Button(buttonFrame, text="Clear", command=self.__clear_entries).pack(side="left")
+        tk.Button(buttonFrame, text="Clear", command=self.__clear_all_entries).pack(side="left")
         tk.Button(buttonFrame, text="Quit", command=self.master.destroy).pack(side="left")
-
 
     def __draw_grid(self):
         for i in range(10):
@@ -48,18 +49,11 @@ class SudokuUI(tk.Frame):
             x0, x1 = MARGIN, WIDTH - MARGIN
             y0, y1 = MARGIN + i * SIDE, MARGIN + i * SIDE
             self.canvas.create_line(x0, y0, x1, y1, fill=color)
+    # ------------------------ UI setup end ------------------------
 
 
-    def __solve(self):
-        self.is_solved, self.grid = solver.solve(self.grid)
-        self.__draw_entries()
-
-
-    def __clear_entries(self):
-        self.grid = [[None for i in range(9)] for i in range(9)]
-        self.__draw_entries()
-
-
+    # ------------------------ Event Handlers start ------------------------
+    # select and highlight a cell when clicked
     def __cell_clicked(self, event):
         x, y = event.x, event.y
         self.canvas.delete("cursor")
@@ -80,12 +74,34 @@ class SudokuUI(tk.Frame):
             self.row, self.col = -1, -1
 
 
+    # if backspace is pressed (on a valid cell), remove the entry from the grid and redraw
+    def __delete_entry(self, event):
+        if self.row >= 0 and self.col >= 0:
+            self.grid[self.row][self.col] = None
+            self.__draw_entries()
+
+
+    # if a number is pressed (on a valid cell), add the entry to the grid and redraw
     def __key_pressed(self, event):
         if self.row >= 0 and self.col >= 0 and event.char in "1234567890":
             self.grid[self.row][self.col] = int(event.char)
             self.__draw_entries()
+    # ------------------------ Event Handlers end ------------------------
 
 
+    # solve the given sudoku
+    def __solve(self):
+        self.is_solved, self.grid = solver.solve(self.grid)
+        self.__draw_entries()
+
+
+    # clear all entries from the grid
+    def __clear_all_entries(self):
+        self.grid = [[None for i in range(9)] for i in range(9)]
+        self.__draw_entries()
+
+
+    # delete all numbers shown on canvas, and redraw them
     def __draw_entries(self):
         self.canvas.delete("numbers")
         for row_idx in range(9):
