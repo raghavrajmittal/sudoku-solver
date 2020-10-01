@@ -1,5 +1,4 @@
-# sudoku-solver
-Sudoku Solver in Python!
+# A Sudoku Solver in Python!
 
 ## Requirements
 A computer, python, tkinter
@@ -25,4 +24,4 @@ So now the solver worked, but it was kinda painful creating the input grid in th
 
 ## Acknowledgements
 - How to get set up taken from [Tkinter Documentation](https://docs.python.org/3/library/tkinter.html)
-- Tkinter code taken from Newcoder's [Introduction to GUI - Tutorial](http://newcoder.io/gui/part-3/)
+- Tkinter code taken from Newcoder.io's [Introduction to GUI - Tutorial](http://newcoder.io/gui/part-3/)
