@@ -1,13 +1,5 @@
 # Python Sudoku Solver
 
-def output(grid):
-    print("-------------------------")
-    for row in grid:
-        print(row)
-    print("-------------------------")
-
-
-# check if the given number is valid when put into a specific position in the sudoku grid
 def check_validity(grid, number, position):
     row_idx, column_idx = position
 
@@ -30,6 +22,7 @@ def check_validity(grid, number, position):
 
     return True
 
+
 # find the indices of the next empty position in the grid, False otherwise
 def get_next_empty_cell(grid):
     for row_idx in range(len(grid)):
@@ -38,11 +31,13 @@ def get_next_empty_cell(grid):
                 return (row_idx, col_idx)
     return False
 
+
 # add a number to the grid
 def add_to_grid(grid, number, position):
     row_idx, column_idx = position
     grid[row_idx][column_idx] = number
     return grid
+
 
 # remove a number from the grid
 def remove_from_grid(grid, number, position):
@@ -51,7 +46,7 @@ def remove_from_grid(grid, number, position):
     return grid
 
 
-# recursive function for each cell
+# recursive helper function
 def sudoku_step(grid):
     next_position = get_next_empty_cell(grid)
 
@@ -59,7 +54,7 @@ def sudoku_step(grid):
     if next_position == False:
         return True
     
-    # else fill in a number
+    # else try numbers from 1 through 9 to see if they dont lead to contradictions
     for number in range(1, 10, 1):
         if check_validity(grid, number, next_position):
             grid = add_to_grid(grid, number, next_position)
@@ -68,39 +63,9 @@ def sudoku_step(grid):
             else:
                 grid = remove_from_grid(grid, number, next_position)
     else:
-        # print("Cannot fill any valid number, backtracking...")
+        # backtrack if no valid number found
         return False
 
 
-
-if __name__=="__main__": 
-    
-    grid = [
-        [None, None, None, None, None, None, None, None, None],
-        [None, None, None, None, None, None, None, None, None],
-        [None, None, None, None, None, None, None, None, None],
-        [None, None, None, None, None, None, None, None, None],
-        [None, None, None, None, None, None, None, None, None],
-        [None, None, None, None, None, None, None, None, None],
-        [None, None, None, None, None, None, None, None, None],
-        [None, None, None, None, None, None, None, None, None],
-        [None, None, None, None, None, None, None, None, None]
-    ]
-
-    grid = [
-        [None, None, None, 2, 6, None, 7, None, 1],
-        [6, 8, None, None, 7, None, None, 9, None],
-        [1, 9, None, None, None, 4, 5, None, None],
-        [8, 2, None, 1, None, None, None, 4, None],
-        [None, None, 4, 6, None, 2, 9, None, None],
-        [None, 5, None, None, None, 3, None, 2, 8],
-        [None, None, 9, 3, None, None, None, 7, 4],
-        [None, 4, None, None, 5, None, None, 3, 6],
-        [7, None, 3, None, 1, 8, None, None, None]
-    ]
-
-    if sudoku_step(grid):
-        print("Sudoku solved!")
-        output(grid)
-    else:
-        print("No solution exists. Check your input again!")
+def solve(grid):
+    return (sudoku_step(grid), grid)
